@@ -21,11 +21,8 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var pkgName string
+//var pkgName string
 
-type Service struct {
-
-}
 
 // initCmd represents the init command
 var initCmd = &cobra.Command{
@@ -38,15 +35,24 @@ Creates a service
 	* gRPC API`,
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println("init called")
+
 		wd, err := os.Getwd()
 		if err != nil {
 			fmt.Errorf("%v", err)
 		}
 
-		if len(args) > 0 {
-			if args[0] != "." {
-				wd = fmt.Sprintf("%s/%s", wd, args[0])
-			}
+		if len(args) < 1 {
+			fmt.Errorf("error: needs args for service name")
+			//os.Exit(0)
+		}
+		wd = fmt.Sprintf("%s/%s", wd, args[0])
+		fmt.Println(args[0])
+		service := &Service{
+			PkgName: args[0],
+			AbsPath: wd,
+		}
+		if err := service.Create(); err != nil {
+			fmt.Errorf("error: failed to create service %s", err)
 		}
 
 	},
@@ -64,4 +70,32 @@ func init() {
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
 	// initCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+}
+
+
+
+type Service struct {
+	PkgName string
+	AbsPath string
+}
+
+func (s *Service) Create() error {
+	//create service dir
+	os.Mkdir(s.PkgName, 755)
+
+	//create main.go
+	mainFile, err := os.Create(fmt.Sprintf("%s/main.go", s.AbsPath))
+	if err != nil {
+		return err
+	}
+	//TODO: default port/flag for port?
+	//TODO: flag for db
+	//TODO: pass type of api to create
+	//main.go generate code to serve http
+
+	return nil
+}
+
+func MainTemplate() []byte {
+
 }
