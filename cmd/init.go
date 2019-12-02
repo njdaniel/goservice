@@ -17,6 +17,7 @@ package cmd
 import (
 	"fmt"
 	"os"
+	"text/template"
 
 	"github.com/spf13/cobra"
 )
@@ -88,6 +89,13 @@ func (s *Service) Create() error {
 	if err != nil {
 		return err
 	}
+	defer mainFile.Close()
+
+	mainTemplate :=  template.Must(template.New("main").Parse(string(MainTemplate())))
+	err = mainTemplate.Execute(mainFile, s)
+	if err != nil {
+		return err
+	}
 	//TODO: default port/flag for port?
 	//TODO: flag for db
 	//TODO: pass type of api to create
@@ -97,5 +105,18 @@ func (s *Service) Create() error {
 }
 
 func MainTemplate() []byte {
+	return []byte(`
+package main
 
+import (
+	"fmt"
+	"log"
+	"net/http"
+)
+
+func main() {
+
+
+}
+`)
 }
