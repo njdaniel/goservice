@@ -3,6 +3,7 @@ package main
 import (
 	"log"
 	"os"
+	"time"
 )
 
 func main() {
@@ -14,13 +15,25 @@ func main() {
 	log.Printf("app starting")
 
 	// Config
-	//var cfg struct{
-	//	Web struct{
-	//		Port int
-	//		SSL bool
-	//	}
-	//
-	//}
+	var cfg struct{
+		Web struct{
+			Port int
+			SSL bool
+			ReadTimeout	time.Duration
+			WriteTimeout time.Duration
+			ShutdownTimeout time.Duration
+		}
+		DB struct{
+			User string
+			Password string
+			Host string
+			Name string
+			DisableTLS bool
+		}
+
+	}
+
+	// parse config
 
 
 	// Start API Service
