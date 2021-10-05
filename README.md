@@ -14,3 +14,4 @@ This CLI tool is for scaffolding go REST and gRPC services.
 ## Building
 
 ## Running
+
